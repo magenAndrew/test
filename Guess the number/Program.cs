@@ -16,8 +16,14 @@ public class Program
 
         new Game(
             serviceProvider.GetService<IConfig>(),
-            serviceProvider.GetService<IGenerator>(), 
+            serviceProvider.GetService<IGenerator>(),
             serviceProvider.GetService<IGameInteraction>()
             ).ProcessGame();
+ 
+        new AnotherGame(
+              serviceProvider.GetService<IConfig>(),
+              serviceProvider.GetService<IGenerator>(),
+              serviceProvider.GetService<IGameInteraction>()
+              ).ProcessGame();
     }
 }

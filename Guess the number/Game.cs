@@ -8,19 +8,14 @@ namespace Guess_the_number
 {/// <summary>
 /// Класс, отвечающий за игру
 /// </summary>
-    public class Game 
+    public class Game :AbstractGame
     {
-        private IConfig config;
-        private IGenerator generator;
-        private IGameInteraction gameInteraction;
-        private int attempCount;
-        private bool isConfigured = false;
-
+ 
         /// <summary>
         /// Согласно принципу единой ответственности, у класса должна быть только одна причина для изменения.
         /// Собственно игра. Причина изменить этот класс - только изменение процесса игры  (S)  
         /// </summary>
-        public void ProcessGame()
+        public override void ProcessGame()
         {
             int attemptCount = 0;
             int tmpValue = config.MinValue -1;
@@ -36,28 +31,12 @@ namespace Guess_the_number
                 gameInteraction.Render($"Попытка {++attemptCount}.");
                 gameInteraction.Render($"Введите число и нажмите <Enter>.");
                 userInput = gameInteraction.GetUserInput();
-                if (!int.TryParse(userInput, out tmpValue))
-                {
-                    gameInteraction.Render($"Это не целое число!");
-                }
-                else if (tmpValue < value)
-                {
-                    gameInteraction.Render($"Маловато будет!");
-                }
-                else if (tmpValue > value)
-                {
-                    gameInteraction.Render($"Перелет!");
-                }                
+                string step = (!int.TryParse(userInput, out tmpValue))? "Это не целое число!":(tmpValue < value)?$"Маловато будет!": $"Перелет!";
+                gameInteraction.Render(step);               
             }
-            if (value == tmpValue)
-            {
-                gameInteraction.Render($"Вы выиграли!");
-            }
-            else {
-                gameInteraction.Render($"Попытки закончились! Искомое число:{value}");
-            }
-
-        }
+            var result = (value == tmpValue) ? "Вы выиграли!" : $"Попытки закончились! Искомое число:{value}";
+            gameInteraction.Render(result);
+         }
         /// <summary>
         /// Конструктор. Поведение класса зависит только от интерфейсов
         /// Чтобы придерживаться ISP, надо разделить общий интерфейс на более мелкие и более специализированные интерфейсы, предназначенные для определенных типов  процессов (ISP)
@@ -65,11 +44,8 @@ namespace Guess_the_number
         /// <param name="config"></param>
         /// <param name="generator"></param>
         /// <param name="gameInteraction"></param>
-        public Game(IConfig config, IGenerator generator, IGameInteraction gameInteraction)
-        {
-            this.config = config;
-            this.generator = generator;
-            this.gameInteraction = gameInteraction;
+        public Game(IConfig config, IGenerator generator, IGameInteraction gameInteraction):base(config, generator, gameInteraction) {
+            gameInteraction.Render($"Настраиваем игру");
         }
 
     }
